@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FarmEdge V2</title>
+<script>try{var fe_t=localStorage.getItem("fe_theme");if(fe_t)document.documentElement.dataset.theme=fe_t}catch(e){}</script>
+<style>
+:root{--bg:#f4f1e8;--surf:rgba(255,255,255,.72);--surf2:#ebe7da;--line:rgba(20,60,40,.14);--tx:#10261b;--mu:#5b6b60;--br:#0f7a52;--br2:#0a5a3d;--ac:#c98a10;--bad:#b42318;--good:#0f7a52;--glow:rgba(15,122,82,.12);--ac-tint:rgba(201,138,16,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07140f;--surf:rgba(255,255,255,.06);--surf2:#0f241a;--line:rgba(255,255,255,.1);--tx:#e9f3ec;--mu:#92a89a;--br:#3ddc97;--br2:#1fa56b;--ac:#f2b441;--bad:#ff7a6b;--good:#3ddc97;--glow:rgba(61,220,151,.14);--ac-tint:rgba(242,180,65,.10);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07140f;--surf:rgba(255,255,255,.06);--surf2:#0f241a;--line:rgba(255,255,255,.1);--tx:#e9f3ec;--mu:#92a89a;--br:#3ddc97;--br2:#1fa56b;--ac:#f2b441;--bad:#ff7a6b;--good:#3ddc97;--glow:rgba(61,220,151,.14);--ac-tint:rgba(242,180,65,.10);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;
+background-image:repeating-linear-gradient(115deg,rgba(15,122,82,.035) 0 2px,transparent 2px 15px),radial-gradient(70rem 40rem at 90% -15%,var(--glow),transparent 60%),radial-gradient(50rem 32rem at -15% 25%,rgba(201,138,16,.08),transparent 60%),radial-gradient(45rem 30rem at 50% 115%,var(--glow),transparent 60%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,"Times New Roman",serif;margin:0;letter-spacing:-.01em}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--bg);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:10px;font:700 21px Georgia,serif}
+.logo i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br2));display:grid;place-items:center;font-style:normal;font-size:17px;box-shadow:0 4px 14px var(--glow)}
+.sp{flex:1}
+.seg{display:flex;background:var(--surf2);border-radius:999px;padding:3px;border:1px solid var(--line)}
+.seg button{border:0;background:none;color:var(--mu);padding:6px 12px;border-radius:999px;font:600 13px inherit;cursor:pointer}
+.seg button.on{background:var(--br);color:#fff}
+.ib{border:1px solid var(--line);background:var(--surf);color:var(--tx);width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:16px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:9;display:flex;justify-content:space-around;background:var(--bg);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+nav a{flex:1;text-align:center;color:var(--mu);text-decoration:none;font:600 12px inherit;padding:6px 4px;border-radius:14px;display:flex;flex-direction:column;gap:2px;align-items:center;min-height:48px}
+nav a b{font-size:20px;font-weight:400}
+nav a.on{color:var(--br);background:var(--glow)}
+main{max-width:1040px;margin:0 auto;padding:18px 18px 110px}
+.view{display:none;animation:in .35s ease}.view.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:18px;backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);box-shadow:0 10px 30px -18px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+.grid{display:grid;gap:14px}
+.hero{background:linear-gradient(140deg,var(--br2),#06382a 70%);color:#eafff4;border:0;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(242,180,65,.35),transparent 70%)}
+.eyebrow{font:600 11px inherit;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.big{font:700 44px Georgia,serif;line-height:1.1;margin:6px 0}
+.big small{font:500 15px system-ui,sans-serif;opacity:.8}
+.chip{display:inline-block;font:700 11px inherit;padding:3px 9px;border-radius:999px;background:rgba(242,180,65,.18);color:var(--ac);border:1px solid rgba(242,180,65,.4)}
+.hero .chip{color:#ffd98a}
+.up{color:var(--good)}.dn{color:var(--bad)}
+.hero .up{color:#7dffc0}.hero .dn{color:#ffb0a6}
+.row{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line);cursor:pointer;min-height:56px}
+.row:last-child{border:0}
+.row.sel{background:var(--glow);border-radius:14px;padding-left:10px;padding-right:10px}
+.row .n{flex:1}.row .n b{display:block}.row .n span{font-size:12px;color:var(--mu)}
+.row svg{width:70px;height:26px;color:var(--br)}
+.px{font:700 17px Georgia,serif;text-align:right}.px small{display:block;font:500 11px system-ui,sans-serif;color:var(--mu)}
+.bar{height:10px;border-radius:99px;background:var(--surf2);overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--br),var(--ac))}
+label{display:block;font:600 13px inherit;color:var(--mu);margin:12px 0 5px}
+input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surf2);color:var(--tx);font:16px inherit;min-height:48px}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--br);outline-offset:2px}
+.btn{border:0;background:linear-gradient(135deg,var(--br),var(--br2));color:#fff;padding:14px 20px;border-radius:14px;font:700 16px inherit;cursor:pointer;min-height:48px;width:100%;margin-top:16px}
+.btn.s{width:auto;margin:0;padding:8px 14px;font-size:13px;min-height:36px;background:var(--surf2);color:var(--br);border:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi{font:700 26px Georgia,serif}
+.lock{border:1px dashed var(--ac);background:var(--ac-tint)}
+.st{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}.st:last-child{border:0}
+.st .l{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font:700 14px Georgia,serif;background:var(--surf2);border:1px solid var(--line)}
+.st.done .l,.st.now .l{background:var(--br);color:#fff;border:0}
+.st.now .l{box-shadow:0 0 0 5px var(--glow)}
+.st p{margin:2px 0 0;font-size:14px;color:var(--mu)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--mu);font-weight:600}
+.scroll{overflow-x:auto}
+.muted{color:var(--mu);font-size:13px}
+@media (min-width:900px){
+body{padding-left:230px}
+nav{top:0;bottom:auto;right:auto;width:230px;flex-direction:column;justify-content:flex-start;gap:6px;padding:90px 14px 14px;border-top:0;border-right:1px solid var(--line);z-index:8}
+nav a{flex:none;flex-direction:row;gap:12px;padding:12px 16px;font-size:15px;text-align:left}
+header{margin-left:-230px;padding-left:248px}
+.g2{grid-template-columns:1.15fr 1fr}
+main{padding-bottom:40px}
+}
+.tag{display:inline-block;font:700 11px inherit;padding:3px 9px;border-radius:999px;border:1px solid var(--line)}
+.tag.official,.tag.ver,.tag.fresh{color:var(--good);border-color:var(--good)}.tag.reported,.tag.est,.tag.aging{color:var(--ac);border-color:var(--ac)}.tag.pending,.tag.user{color:var(--mu)}.tag.old{color:var(--bad);border-color:var(--bad)}
+.rk{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.rk:last-child{border:0}.rk p{margin:3px 0 0;font-size:14px}
+.lvl{flex:none;height:28px;min-width:92px;text-align:center;border-radius:999px;font:700 12px/28px inherit;color:#fff}
+.l0{background:#0f7a52}.l1{background:#9a6b00}.l2{background:#c2410c}.l3{background:#b42318}.l9{background:var(--surf2);color:var(--mu);border:1px solid var(--line)}
+.note{font-size:13px;color:var(--mu);margin:10px 0 0}.err{border:1px dashed var(--bad);border-radius:16px;padding:14px}
+@media (max-width:899px){nav{overflow-x:auto;justify-content:flex-start}nav a{min-width:70px;font-size:11px}}
+@media (max-width:420px){.two{grid-template-columns:1fr}.big{font-size:36px}}
+:root{--card:#fffdf8;--out:cubic-bezier(.22,1,.36,1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#10271c}}
+:root[data-theme="dark"]{--card:#10271c}
+body,input,select,button{font-family:-apple-system,"SF Pro Text",Inter,system-ui,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3,.big,.kpi,.px{font-family:-apple-system,"SF Pro Display",Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+label{font-weight:600;font-size:13px}input,select{font-size:16px}.btn{font-weight:700;font-size:16px}.btn.s,.seg button,.eyebrow{font-weight:600;font-size:13px}.eyebrow{font-size:11px}.chip,.tag{font-weight:700;font-size:11px}.lvl{font-weight:700;font-size:12px;line-height:28px}nav a{font-weight:600;font-size:12px}@media(min-width:900px){nav a{font-size:15px}}
+*{-webkit-tap-highlight-color:transparent}
+.card:not(.hero):not(.lock){background:var(--card);backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:24px;box-shadow:0 1px 2px rgba(16,38,27,.06),0 14px 34px -22px rgba(16,38,27,.3)}
+nav{background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4)}
+nav a svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn,.ib,.seg button,nav a,.row[data-i],summary{transition:transform .3s var(--out),background-color .2s,color .2s;touch-action:manipulation}
+.btn:active,.ib:active,.seg button:active,nav a:active,.row[data-i]:active{transform:scale(.96);transition-duration:.08s}
+#hero{cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.bar{position:relative}.bar u{position:absolute;top:0;bottom:0;width:3px;background:var(--tx);border-radius:2px}
+input:user-invalid{border-color:var(--bad)}
+.sum{background:var(--glow);border-radius:16px;padding:14px;margin-bottom:6px}.sum b{display:block;font-size:17px}.sum span{font-size:13px;color:var(--mu)}
+details.rk{display:block}.rk summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;min-height:48px}.rk summary::-webkit-details-marker{display:none}.rk p{padding-left:104px}
+.chev{margin-left:auto;width:8px;height:8px;border:solid var(--mu);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .3s var(--out)}details[open] .chev{transform:rotate(225deg)}
+.tip{background:var(--ac-tint);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-size:14px}
+.stk{display:flex;height:14px;border-radius:99px;overflow:hidden;gap:2px}.stk i{display:block;min-width:4px}.lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mu);margin-top:8px}.lg s{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+.st{position:relative}.st::before{content:"";position:absolute;left:16px;top:48px;bottom:-14px;width:2px;background:var(--line)}.st:last-child::before{display:none}.st.done::before{background:var(--br)}
+.ts{position:fixed;left:50%;bottom:96px;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--tx);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;transition:opacity .25s,transform .35s var(--out);z-index:20}.ts.on{opacity:1;transform:translate(-50%,0)}@media(min-width:900px){.ts{bottom:28px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+#q_kp{gap:14px 12px}#q_kp .kpi{font-size:20px}#v-sim input[type=range]{padding:0;min-height:32px;border:0;background:none;accent-color:var(--br)}#v-sim label b{color:var(--tx);float:right}#q_pr .btn.s{min-height:40px}
+#a_kp{gap:14px 12px}#a_kp .kpi{font-size:22px}#a_main .row .btn.s{margin-left:4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-9 5-14 14-14 0 9-5 14-14 14zM5 19l8-8"/></svg></i>FarmEdge <small style="font:700 10px system-ui;color:var(--ac);border:1px solid var(--ac);border-radius:6px;padding:1px 5px">V2</small></div><div class="sp"></div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+  <div class="seg" role="group" aria-label="Role (demo view switch, not an identity check)"><button id="rF" class="on">Farmer</button><button id="rO">Field officer</button></div>
+  <span class="muted" style="font-size:10px">Demo view only · not verified</span>
+  </div>
+  <button class="ib" id="th" aria-label="Toggle theme">◐</button>
+</header>
+
+<nav>
+  <a href="#home" data-v="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Home</a>
+  <a href="#crops" data-v="crops"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-9 5-14 14-14 0 9-5 14-14 14zM5 19l8-8"/></svg>Crops</a>
+  <a href="#weather" data-v="weather"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4 4 0 010-8 5 5 0 019.6-1A4.5 4.5 0 0117 18z"/></svg>Weather</a>
+  <a href="#risk" data-v="risk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3zM12 10v4M12 17v.5"/></svg>Risk</a>
+  <a href="#plan" data-v="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h4L19 10l-4-4L5 16zM13 8l4 4"/></svg>Records</a>
+  <a href="#profit" data-v="profit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8M15 8h5v5"/></svg>Profit</a>
+  <a href="#sim" data-v="sim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3M8 15h8"/></svg>Simulate</a>
+  <a href="#admin" data-v="admin" id="nadm" style="display:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6zM9 12l2 2 4-4"/></svg>Admin</a>
+  <a href="#roadmap" data-v="roadmap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 5h11l-2 4 2 4H6"/></svg>Roadmap</a>
+</nav>
+
+<main>
+<!-- HOME -->
+<section class="view" id="v-home">
+  <div class="grid g2">
+    <div class="grid">
+      <div class="card hero" id="hero">
+        <div class="eyebrow">Bukidnon · <span id="dt"></span></div>
+        <h2 id="hn" style="font-size:22px;margin-top:8px"></h2>
+        <div class="big"><span id="hp"></span> <small id="hu"></small></div>
+        <div id="hc"></div>
+        <svg id="hs" viewBox="0 0 300 70" style="width:100%;height:70px;margin-top:10px;color:#7dffc0"></svg>
+        <span class="chip">Illustrative sample · NOT live market data</span> <span class="muted" style="color:#cfe9da">Swipe the card to switch crop</span>
+      </div>
+      <div class="card lock">
+        <b>Price-risk alerts</b> <span class="chip">Stage D</span>
+        <p class="muted" style="margin:6px 0 0">Rule-based risk checks are in the Risk tab and marked experimental. Automatic alerts stay off until forecasts are validated on real Bukidnon data.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card"><h3 style="margin-bottom:6px">Price board</h3><div id="pl"></div></div>
+      <div class="card"><h3>Supply vs. demand</h3><p class="muted">Planting intentions compared with buyer requirements (sample).</p><div id="sd"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section class="view" id="v-plan"><div class="grid g2">
+<div class="grid"><div class="card"><h3>Log a planting</h3><p class="muted">Plain, fast entry. Works with one hand.</p>
+<label for="fc">Crop</label><select id="fc"></select>
+<div class="two"><div><label for="fa">Area (hectares)</label><input id="fa" type="number" inputmode="decimal" min="0.01" step="0.01" value="1"></div>
+<div><label for="fy">Expected harvest (kg)</label><input id="fy" type="number" inputmode="numeric" min="0" placeholder="e.g. 12000"></div></div>
+<div class="two"><div><label for="fd">Planting date</label><input id="fd" type="date"></div><div><label for="fh">Expected harvest date</label><input id="fh" type="date"></div></div>
+<p class="note" id="fe" role="alert"></p><button class="btn" id="fs">Save planting</button></div>
+<div class="card"><h3>Log a price you saw</h3><p class="muted">Every price needs a unit, a date and a source.</p>
+<label for="xc">Crop</label><select id="xc"></select>
+<div class="two"><div><label for="xp">Price</label><input id="xp" type="number" inputmode="decimal" min="0" step="0.01"></div><div><label for="xu">Unit</label><select id="xu"><option>₱/kg</option><option>₱/ton</option></select></div></div>
+<div class="two"><div><label for="xd">Date observed</label><input id="xd" type="date"></div><div><label for="xt">Status</label><select id="xt"><option value="user">User-submitted</option><option value="est">Estimated</option><option value="ver">Verified (officers)</option></select></div></div>
+<label for="xm">Market or source</label><input id="xm" placeholder="e.g. Valencia public market, DA price bulletin">
+<p class="note" id="xe" role="alert"></p><button class="btn" id="xs">Save price</button></div></div>
+<div class="grid"><div class="card"><h3>Planting records</h3><p class="muted" id="rn"></p><p class="muted" id="syn" style="font-size:12px"></p><div id="rl"></div></div>
+<div class="card"><h3>Price observations</h3><div id="xl"></div></div></div></div></section>
+
+<!-- CROPS -->
+<section class="view" id="v-crops"><div class="grid g2">
+<div class="card"><h3>Crop database</h3><p class="muted">Choose your location. Each crop shows how well it is documented.</p>
+<div class="two"><div><label for="cp">Province</label><select id="cp"></select></div><div><label for="cm">Municipality</label><select id="cm"></select></div></div>
+<label for="cb">Barangay (optional)</label><input id="cb" placeholder="Type your barangay">
+<p class="note">Only Bukidnon is loaded. More provinces are added as data rows, not code.</p><div id="cl" style="margin-top:8px"></div>
+<p class="note">Growing season, growing period, soil and pest details are not shown yet. They need DA, ATI or BPI references first, and none are invented here.</p></div>
+<div class="card"><h3>Suggest a crop or variety</h3><p class="muted">Goes to a pending list until a field officer verifies it.</p>
+<label for="sn">Crop</label><input id="sn" placeholder="e.g. Tomato">
+<label for="sv">Variety (optional)</label><input id="sv">
+<label for="ss">Evidence or source</label><input id="ss" placeholder="e.g. DA-RFO 10 bulletin, municipal agriculture office">
+<p class="note" id="se" role="alert"></p><button class="btn" id="sb">Submit for verification</button></div></div></section>
+
+<!-- WEATHER -->
+<section class="view" id="v-weather"><div class="grid g2">
+<div class="grid"><div class="card"><label for="wm" style="margin-top:0">Municipality</label><select id="wm"></select></div><div class="card hero" id="wc"></div></div>
+<div class="card"><h3>7-day forecast</h3><div id="wf"></div><p class="note">Forecasts are estimates and do not guarantee any crop outcome. Official PAGASA advisories are not connected yet; check pagasa.dost.gov.ph.</p></div></div></section>
+
+<!-- RISK -->
+<section class="view" id="v-risk"><div class="grid g2">
+<div class="card"><h3>Risk analysis</h3><p class="muted">Rule-based and explainable. It uses only your records, your price entries, the forecast and the profit calculator.</p>
+<label for="rc">Crop</label><select id="rc"></select>
+<label for="rd">Expected demand for this harvest window (kg)</label><input id="rd" type="number" inputmode="numeric" min="0" placeholder="From buyers or your cooperative">
+<p class="note">Experimental. These are not predictions. A real forecasting model can be plugged in through <code>RISK_MODELS</code>.</p></div>
+<div class="card"><h3>Results</h3><div id="ro" aria-live="polite"></div></div></div></section>
+
+<!-- PROFIT -->
+<section class="view" id="v-profit"><div class="grid g2"><div class="card"><h3>Profitability calculator</h3><p class="muted">Nothing is prefilled, so no result rests on a guess. Costs are totals for your whole planting, in ₱. Negative values count as 0.</p>
+<label for="pc">Crop</label><select id="pc"></select>
+<div class="two"><div><label for="pa">Land area (ha)</label><input id="pa" type="number" inputmode="decimal" min="0" step="0.01"></div><div><label for="pv">Estimated harvest (kg)</label><input id="pv" type="number" inputmode="numeric" min="0"></div></div>
+<label for="pp">Expected selling price (₱/kg)</label><input id="pp" type="number" inputmode="decimal" min="0" step="0.01">
+<div class="two"><div><label for="ps">Seeds / seedlings (₱)</label><input id="ps" type="number" min="0" inputmode="decimal"></div><div><label for="pf">Fertilizer (₱)</label><input id="pf" type="number" min="0" inputmode="decimal"></div>
+<div><label for="pd">Pesticide (₱)</label><input id="pd" type="number" min="0" inputmode="decimal"></div><div><label for="pb">Labor (₱)</label><input id="pb" type="number" min="0" inputmode="decimal"></div>
+<div><label for="pi">Irrigation (₱)</label><input id="pi" type="number" min="0" inputmode="decimal"></div><div><label for="pt">Transportation (₱)</label><input id="pt" type="number" min="0" inputmode="decimal"></div></div>
+<label for="po2">Other costs (₱)</label><input id="po2" type="number" min="0" inputmode="decimal"></div>
+<div class="card" id="po" aria-live="polite"></div></div></section>
+
+<!-- SIMULATE -->
+<section class="view" id="v-sim"><div class="grid g2">
+<div class="grid"><div class="card"><h3>Test a scenario</h3><p class="muted">Random sample farmers plus your own plantings from Records. Prices and demand start from the Home tab. Move a slider to see what happens to farmers.</p>
+<div id="q_pr" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px"></div>
+<div id="q_ctl"></div>
+<label for="q_crop">Crop that farmers crowd into</label><select id="q_crop"></select>
+<div class="two"><div><label for="q_seed">Random seed</label><input id="q_seed" type="number" value="2027"></div><div style="display:flex;align-items:flex-end"><button class="btn s" id="q_new" style="width:100%;min-height:48px">New farmers</button></div></div>
+<p class="note" id="q_w"></p>
+<p class="note">Sample data only. Simulated farmers are random and are never saved as records. Prices are the Home sample prices unless you logged your own price for that crop.</p></div></div>
+<div class="grid"><div class="card"><h3>Results</h3><div class="two" id="q_kp" style="margin-top:12px"></div></div>
+<div class="card"><h3>Supply vs. demand</h3><p class="muted">Bar = expected supply. Black marker = demand.</p><div id="q_sd"></div></div>
+<div class="card"><h3>Your plantings in this scenario</h3><div id="q_my"></div></div>
+<div class="card"><h3>Crop results</h3><div class="scroll" id="q_ct"></div></div>
+<details class="card"><summary style="cursor:pointer;font-weight:700;min-height:32px">Simulated farmers (sample)</summary><div class="scroll" id="q_ft" style="margin-top:10px"></div></details>
+</div></div></section>
+
+<!-- ADMIN -->
+<section class="view" id="v-admin">
+<div class="card" id="a_gate"><h3>Admin only</h3><p class="muted">This area opens for the page owner or an editor who is signed in to Claude. Everyone else keeps using FarmEdge normally.</p></div>
+<div id="a_main" hidden><div class="grid g2">
+<div class="grid"><div class="card"><h3>What is going on in the data</h3><p class="muted">Live totals from every contributor whose entries are synced.</p><div class="two" id="a_kp" style="margin-top:12px"></div></div>
+<div class="card"><h3>Data quality checks</h3><p class="muted">Rule-based and explainable. A flag means look closer, not that the data is wrong.</p><div id="a_q"></div></div>
+<div class="card"><h3>Crop activity</h3><div class="scroll" id="a_ct"></div></div></div>
+<div class="grid"><div class="card"><h3>Verification queue</h3><p class="muted">Verified plantings show a Verified tag to the farmer who logged them.</p><div id="a_vq"></div></div>
+<div class="card"><h3>Crop suggestions</h3><div id="a_sg"></div></div>
+<div class="card"><h3>Latest price entries</h3><p class="muted">Flagged prices are left out of the admin checks.</p><div id="a_px"></div></div>
+<div class="card"><h3>Export</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn s" data-a="exp" data-k="r">Plantings (CSV)</button><button class="btn s" data-a="exp" data-k="p">Prices (CSV)</button></div></div></div>
+</div></div></section>
+
+<!-- ROADMAP -->
+<section class="view" id="v-roadmap">
+  <div class="grid g2">
+    <div class="card"><h3 style="margin-bottom:4px">Build roadmap</h3><div id="rm"></div></div>
+    <div class="grid">
+      <div class="card"><h3>Stage B · Role permissions</h3><p class="muted">What each account type will be allowed to do.</p>
+      <div class="scroll"><table><tr><th>Action</th><th>Farmer</th><th>Officer</th><th>Admin</th></tr>
+      <tr><td>Log own plantings</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>View price board</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Enter price observations</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Verify records</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Manage accounts</td><td>—</td><td>—</td><td>✓</td></tr></table></div></div>
+      <div class="card"><h3>Stage C · Data to collect</h3><p class="muted" style="margin-bottom:0">Verified local prices · planting intentions · harvest estimates · actual sales · buyer requirements. Each entry carries a unit, a date and who verified it.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+var CROPS=[
+{n:"Tomato",u:"₱/kg",h:[24,26,31,29,35,38,36,40],cost:310000,y:30000},
+{n:"Cabbage",u:"₱/kg",h:[16,15,14,15,13,12,13,12],cost:190000,y:28000},
+{n:"Yellow corn",u:"₱/kg",h:[13.5,13.8,14,14.2,14,14.6,14.8,15],cost:62000,y:5500},
+{n:"Ginger",u:"₱/kg",h:[70,72,68,66,69,74,78,80],cost:260000,y:15000},
+{n:"Banana (Cavendish)",u:"₱/kg",h:[11,11,11.5,11,11.5,12,12,12.5],cost:150000,y:35000}];
+var DEM=[{n:"Tomato",p:82,d:70},{n:"Cabbage",p:95,d:60},{n:"Yellow corn",p:64,d:80},{n:"Ginger",p:48,d:55}];
+var STAGES=[
+["A","Working interface","now","Screens and forms are built. This prototype is for testing and refining them."],
+["B","Shared database and accounts","next","Real database, individual accounts for farmers and field officers, role permissions. SQL schema is in the package."],
+["C","Real Bukidnon data","","Verified prices, planting intentions, harvest estimates, actual sales, buyer requirements."],
+["D","Forecasting and risk alerts","","Validate forecasts on real local data first. Only then issue experimental alerts to pilot users."],
+["E","Deployment and pilot","","Secure hosting, small farmer pilot, measure whether decisions improve before expanding past Bukidnon."]];
+var role="farmer",sel=0,recs=[],$=function(i){return document.getElementById(i)};
+var php=function(v){return "₱"+Number(v).toLocaleString("en-PH",{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})};
+try{var s=JSON.parse(localStorage.getItem("fe_recs")||"[]");if(Array.isArray(s))recs=s}catch(e){}
+function save(){try{localStorage.setItem("fe_recs",JSON.stringify(recs))}catch(e){}}
+function spark(a,w,h){var mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=(mx-mn)||1;
+ var p=a.map(function(v,i){return (i*w/(a.length-1)).toFixed(1)+","+(h-4-(v-mn)/r*(h-8)).toFixed(1)});
+ return '<polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="'+p.join(" ")+'"/>'}
+function chg(c){var a=c.h,d=(a[a.length-1]-a[a.length-2])/a[a.length-2]*100;return d}
+function pct(d){return '<span class="'+(d>=0?"up":"dn")+'">'+(d>=0?"▲ ":"▼ ")+Math.abs(d).toFixed(1)+'% vs. last week</span>'}
+function home(){var c=CROPS[sel],v=c.h[c.h.length-1];
+ $("hn").textContent=c.n;$("hp").textContent=php(v);$("hu").textContent="per kg · farm-gate";
+ $("hc").innerHTML=pct(chg(c))+' <span style="opacity:.8;font-size:13px">· 8-week range '+php(Math.min.apply(0,c.h))+' to '+php(Math.max.apply(0,c.h))+'</span>';$("hs").innerHTML=area(c.h,300,70);
+ $("pl").innerHTML=CROPS.map(function(x,i){var d=chg(x);return '<div class="row'+(i==sel?" sel":"")+'" data-i="'+i+'" tabindex="0" role="button"><div class="n"><b>'+x.n+'</b><span>'+pct(d)+'</span></div><svg viewBox="0 0 70 26">'+spark(x.h,70,26)+'</svg><div class="px">'+php(x.h[x.h.length-1])+'<small>per kg</small></div></div>'}).join("");
+ $("sd").innerHTML=DEM.map(function(x){var g=x.p>x.d;return '<div><div style="display:flex;justify-content:space-between"><b>'+x.n+'</b><span class="muted">Planted '+x.p+' · Demand '+x.d+' <b class="'+(g?"dn":"up")+'">'+(g?"Oversupply risk":"Room to sell")+'</b></span></div><div class="bar" role="img" aria-label="Planted '+x.p+', demand '+x.d+'"><i style="width:'+Math.min(100,x.p)+'%"></i><u style="left:'+Math.min(99,x.d)+'%"></u></div></div>'}).join("")}
+var DB=[
+["Corn","Zea mays","official","Bukidnon","PSA Census of Agriculture; Bukidnon provincial government","Bukidnon held about 46.6% of Region X corn area in the 2002 census."],
+["Palay (rice)","Oryza sativa","official","Bukidnon","Bukidnon provincial government, agriculture page",""],
+["Sugarcane","Saccharum officinarum","official","Bukidnon","Bukidnon provincial government; PSA performance reports","Described as the province’s third most grown crop."],
+["Pineapple","Ananas comosus","official","Bukidnon","PSA Census of Agriculture; PSA-BAS","Region X led national pineapple output in 2014."],
+["Banana (Cavendish, saba)","Musa spp.","official","Bukidnon","PSA performance reports; PSA-BAS","Region X is a major Cavendish and saba producer."],
+["Cassava","Manihot esculenta","official","Bukidnon","Bukidnon provincial government",""],
+["Coconut","Cocos nucifera","official","Bukidnon","Bukidnon provincial government",""],
+["Coffee","Coffea spp.","official","Bukidnon","Bukidnon provincial government; PSA (robusta and arabica in Region X)",""],
+["Rubber","Hevea brasiliensis","official","Bukidnon","Bukidnon provincial government",""],
+["Abaca","Musa textilis","official","Bukidnon","Bukidnon provincial government",""],
+["Tomato","Solanum lycopersicum","official","Bukidnon","Bukidnon provincial government, quick facts",""],
+["Cacao","Theobroma cacao","reported","Bukidnon","DA-BSWM land-use legend lists cacao","A land-use label is not proof of volume. Verify locally."],
+["Highland vegetables (cabbage, lettuce, broccoli)","Brassica oleracea; Lactuca sativa","reported","Impasugong","Municipal profile (secondary source)","Not confirmed by PSA or DA for this municipality."]];
+var PROV={"Bukidnon":{"Malaybalay":[8.15,125.13],"Valencia":[7.91,125.09],"Maramag":[7.76,125.0],"Quezon":[7.73,125.1],"Manolo Fortich":[8.37,124.86],"Impasugong":[8.3,125.0]}};
+var RISK_MODELS=[],CALC=null,W=null,SUG=[],PX=[];
+try{SUG=JSON.parse(localStorage.getItem("fe_sug")||"[]")}catch(e){}
+try{PX=JSON.parse(localStorage.getItem("fe_px")||"[]")}catch(e){}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function age(d){return Math.floor((Date.now()-new Date(d+"T00:00:00"))/864e5)}
+function opt(x){return '<option>'+esc(x)+'</option>'}
+function fill(){["fc","pc","rc","xc"].forEach(function(i){$(i).innerHTML=DB.map(function(c){return opt(c[0])}).join("")});
+ $("cp").innerHTML=Object.keys(PROV).map(opt).join("");munis()}
+function munis(){var m=Object.keys(PROV[$("cp").value]).map(opt).join("");$("cm").innerHTML=m;$("wm").innerHTML=m}
+var LB={official:"Officially documented",reported:"Locally reported · unverified",pending:"Pending verification"};
+function crops(){var m=$("cm").value;
+ $("cl").innerHTML=DB.filter(function(c){return c[3]=="Bukidnon"||c[3]==m}).map(function(c){return '<div class="row" style="cursor:default"><div class="n"><b>'+c[0]+'</b><span><i>'+c[1]+'</i> · '+c[3]+(c[3]=="Bukidnon"?" (province-level, not confirmed for "+esc(m)+")":"")+'</span><div style="margin:6px 0"><span class="tag '+c[2]+'">'+LB[c[2]]+'</span></div><span>Source: '+c[4]+'. '+c[5]+' Varieties: none verified yet.</span></div></div>'}).join("")+
+ SUG.map(function(s){return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(s.n)+(s.v?" · "+esc(s.v):"")+'</b><div style="margin:6px 0"><span class="tag pending">'+LB.pending+'</span></div><span>Suggested for '+esc(s.m)+'. Evidence: '+esc(s.s)+'</span></div></div>'}).join("")}
+function list(){$("rn").textContent=recs.length?recs.length+" record"+(recs.length>1?"s":"")+" · "+(role=="officer"?"officer view: you can verify":"farmer view"):"No records yet. Log your first planting.";
+ $("rl").innerHTML=recs.map(function(r,i){return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(r.n||CROPS[r.c].n)+' · '+r.a+' ha</b><span>Planted '+r.d+(r.h?" · harvest "+r.h:"")+(r.y?" · est. "+Number(r.y).toLocaleString("en-PH")+" kg":"")+'</span></div>'+((r.v||RV.ok[r.id])?'<span class="tag ver">Verified</span>':RV.no[r.id]?'<span class="tag old">Rejected by admin</span>':(role=="officer"?'<button class="btn s" data-v="'+i+'">Verify</button>':'<span class="tag pending">Pending</span>'))+'</div>'}).join("");risk()}
+var FR={ver:"Verified",est:"Estimated",user:"User-submitted"};
+function pxl(){var a=PX.slice().sort(function(x,y){return y.d<x.d?-1:1});
+ $("xl").innerHTML=a.length?a.map(function(p){var g=age(p.d),f=g<=7?["fresh","Fresh"]:g<=30?["aging","Aging · "+g+" days"]:["old","Outdated · "+g+" days"];return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(p.c)+'</b><span>'+p.d+' · '+esc(p.m)+'</span><div style="margin:6px 0"><span class="tag '+p.t+'">'+FR[p.t]+'</span> <span class="tag '+f[0]+'">'+f[1]+'</span></div></div><div class="px">₱'+p.p+'<small>'+p.u.replace("₱","")+'</small></div></div>'}).join(""):'<p class="muted">No price entries yet. Add one from a market visit, buyer quote or official bulletin.</p>';risk()}
+function calc(){var g=function(i){return Math.max(0,+$(i).value||0)};
+ var cost=["ps","pf","pd","pb","pi","pt","po2"].reduce(function(s,i){return s+g(i)},0),kg=g("pv"),p=g("pp"),a=g("pa"),rev=kg*p,net=rev-cost,ppk=kg?net/kg:0,be=kg?cost/kg:0,roi=cost?net/cost*100:0;
+ CALC=kg&&p&&cost?{crop:$("pc").value,margin:rev?net/rev*100:0,be:be,p:p}:null;
+ var n=function(v){return (v<0?"−":"")+php(Math.abs(Math.round(v*100)/100))};
+ $("po").innerHTML=!kg||!p?'<h3>Result</h3><p class="muted">Enter the estimated harvest and expected price to see your result.</p>':'<h3>Result</h3><div class="two"><div><div class="muted">Total production cost</div><div class="kpi">'+n(cost)+'</div></div><div><div class="muted">Gross revenue</div><div class="kpi">'+n(rev)+'</div></div></div><div style="margin:16px 0;padding:16px;border-radius:16px;background:var(--glow)"><div class="muted">Estimated net profit</div><div class="kpi '+(net>=0?"up":"dn")+'">'+n(net)+'</div><div class="muted">'+n(ppk)+' per kg · ROI '+roi.toFixed(1)+'%</div></div><div class="muted">Break-even selling price</div><div class="kpi">'+n(be)+' <small class="muted" style="font:500 13px system-ui">per kg</small></div>'+(a?'<p class="muted">Per hectare: '+Math.round(kg/a).toLocaleString("en-PH")+' kg, cost '+n(cost/a)+'</p>':"")+(!cost?'<p class="note">No costs entered yet. Profit equals revenue until you add them.</p>':"")+'<p class="note">Assumptions are exactly the numbers you typed. Change any field to test another case.</p>'+brk(cost);risk()}
+var WC={0:"Clear",1:"Mostly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",80:"Rain showers",81:"Rain showers",82:"Violent showers",95:"Thunderstorm",96:"Thunderstorm, hail",99:"Thunderstorm, hail"};
+function loadW(){var m=$("cm").value,ll=PROV[$("cp").value][m];W=null;$("wf").innerHTML="";$("wc").innerHTML='<div class="eyebrow">Loading weather for '+esc(m)+'…</div>';
+ fetch("https://api.open-meteo.com/v1/forecast?latitude="+ll[0]+"&longitude="+ll[1]+"&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max&timezone=Asia%2FManila&forecast_days=7")
+ .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){W=j;showW(m)}).catch(function(){
+  $("wc").innerHTML='<div class="err"><b>Live weather could not load</b><p style="margin:6px 0 0;font-size:14px">This preview blocks requests to outside sites. FarmEdge asks Open-Meteo directly, so weather appears once the file is hosted on your own site or opened from your computer. No placeholder weather is shown.</p><button class="btn s" id="wretry" style="margin-top:10px">Try again</button></div>';$("wretry").onclick=loadW;risk()})}
+function showW(m){var c=W.current,d=W.daily;
+ $("wc").innerHTML='<div class="eyebrow">'+esc(m)+', Bukidnon · now</div><div class="big">'+Math.round(c.temperature_2m)+'°C <small>'+(WC[c.weather_code]||"Mixed conditions")+'</small></div><div>Humidity '+c.relative_humidity_2m+'% · Wind '+Math.round(c.wind_speed_10m)+' km/h · Rain now '+c.precipitation+' mm</div><p style="font-size:12px;opacity:.8;margin:10px 0 0">Source: Open-Meteo forecast model · retrieved '+new Date().toLocaleString("en-PH")+' · approximate town-center coordinates</p>';
+ var bi=d.precipitation_sum.indexOf(Math.min.apply(0,d.precipitation_sum));$("wf").innerHTML='<div class="tip"><b>Best day to harvest or haul:</b> '+new Date(d.time[bi]+"T00:00:00").toLocaleDateString("en-PH",{weekday:"long",day:"numeric",month:"short"})+' (least rain, '+d.precipitation_sum[bi]+' mm, forecast estimate)</div>'+d.time.map(function(t,i){return '<div class="row" style="cursor:default"><div class="n"><b>'+new Date(t+"T00:00:00").toLocaleDateString("en-PH",{weekday:"short",day:"numeric",month:"short"})+'</b><span>'+(WC[d.weather_code[i]]||"Mixed conditions")+'</span><div class="bar" style="height:6px;margin:6px 0 0;max-width:140px" title="Chance of rain"><i style="width:'+d.precipitation_probability_max[i]+'%"></i></div></div><div class="px">'+Math.round(d.temperature_2m_max[i])+'° / '+Math.round(d.temperature_2m_min[i])+'°<small>'+d.precipitation_sum[i]+' mm · '+d.precipitation_probability_max[i]+'% chance · wind '+Math.round(d.wind_speed_10m_max[i])+' km/h</small></div></div>'}).join("");risk()}
+function band(v,t){var i=0;t.forEach(function(x,k){if(v>=x)i=k+1});return i}
+function mk(n,l,w,d){return {n:n,l:l,w:w,d:d}}
+function risk(){var c=$("rc").value,dm=+$("rd").value||0,o=[],kgs=function(x){return x.u=="₱/ton"?x.p/1000:x.p};
+ var R=recs.filter(function(r){return r.n==c&&r.h&&r.y}),sup=R.reduce(function(s,r){return s+r.y},0),nv=R.filter(function(r){return r.v}).length;
+ o.push(!sup||!dm?mk("Oversupply",null,"Needs harvest estimates for "+c+" in your records and an expected demand figure.","Records with harvest dates and volumes: "+R.length+" · demand entered: "+(dm?"yes":"no")):(function(){var q=sup/dm;return mk("Oversupply",band(q,[.7,1,1.3]),"Expected supply is "+Math.round(q*100)+"% of the demand you entered.","Supply "+sup.toLocaleString("en-PH")+" kg from "+R.length+" record(s), "+nv+" verified · demand "+dm.toLocaleString("en-PH")+" kg. Covers your records only, not all farmers.")})());
+ var P=PX.filter(function(x){return x.c==c}).sort(function(a,b){return a.d<b.d?-1:1});
+ o.push(P.length<3?mk("Price decline",null,"Needs at least 3 dated price entries for "+c+".","Entries: "+P.length):(function(){var l=P[P.length-1],pr=P.slice(0,-1),av=pr.reduce(function(s,x){return s+kgs(x)},0)/pr.length,dr=(av-kgs(l))/av*100,g=age(l.d);return mk("Price decline",band(dr,[5,15,25]),"Latest price is "+Math.abs(dr).toFixed(1)+"% "+(dr>=0?"below":"above")+" the average of earlier entries.","Latest ₱"+kgs(l).toFixed(2)+"/kg on "+l.d+" ("+FR[l.t]+(g>30?", outdated "+g+" days":"")+") vs earlier average ₱"+av.toFixed(2)+"/kg. "+P.length+" entries.")})());
+ o.push(!W?mk("Weather",null,"Forecast not loaded. See the Weather tab.","No weather data"):(function(){var d=W.daily,mr=Math.max.apply(0,d.precipitation_sum),mw=Math.max.apply(0,d.wind_speed_10m_max),tr=d.precipitation_sum.reduce(function(a,b){return a+b},0),mt=Math.max.apply(0,d.temperature_2m_max),l=Math.max(band(mr,[25,50,80]),band(mw,[40,50,63])),w="Heavy rain or strong wind can disrupt harvest and hauling.";if(tr<5&&mt>=34){l=Math.max(l,1);w="A dry, hot week can raise water stress."}else if(!l)w="No heavy rain or strong wind in the 7-day forecast.";return mk("Weather",l,w+" Crop impact depends on growth stage; forecasts are estimates.","Heaviest day "+mr+" mm · strongest wind "+Math.round(mw)+" km/h · 7-day rain "+Math.round(tr)+" mm · max temp "+Math.round(mt)+"°C (Open-Meteo)")})());
+ var H=R.slice().sort(function(a,b){return a.h<b.h?-1:1});
+ o.push(H.length<3?mk("Harvest concentration",null,"Needs at least 3 records with harvest dates for "+c+".","Records: "+H.length):(function(){var b=0;H.forEach(function(r){var e=new Date(r.h).getTime()+12096e5,s=H.reduce(function(a,x){var t=new Date(x.h).getTime();return a+(t>=new Date(r.h).getTime()&&t<=e?x.y:0)},0);b=Math.max(b,s)});var sh=b/sup;return mk("Harvest concentration",band(sh,[.4,.6,.8]),Math.round(sh*100)+"% of expected volume is due within one 14-day window.","Based on "+H.length+" records ("+nv+" verified).")})());
+ o.push(!CALC?mk("Profitability",null,"Fill in the profit calculator to include this.","No calculator result yet"):mk("Profitability",CALC.margin<0?3:CALC.margin<10?2:CALC.margin<25?1:0,"Margin is "+CALC.margin.toFixed(1)+"% at your expected price.","Calculator for "+CALC.crop+": price ₱"+CALC.p+"/kg vs break-even ₱"+CALC.be.toFixed(2)+"/kg"+(CALC.crop!=c?" (different crop from the one selected above)":"")));
+ RISK_MODELS.forEach(function(f){try{var x=f({crop:c,records:R,prices:P,weather:W,demand:dm});if(x)o.push(x)}catch(e){}});
+ $("ro").innerHTML=rsum(o)+o.map(function(x){return '<details class="rk" data-n="'+x.n+'"'+((OPN[x.n]===undefined?x.l>=2:OPN[x.n])?" open":"")+'><summary><span class="lvl '+(x.l===null?"l9":"l"+x.l)+'">'+(x.l===null?"Not enough data":["Low","Moderate","High","Critical"][x.l])+'</span><b>'+x.n+'</b><i class="chev"></i></summary><p>'+x.w+'</p><p class="muted">Data: '+x.d+'</p></details>'}).join("")}
+function locChange(){crops();loadW()}
+function road(){$("rm").innerHTML=STAGES.map(function(s){return '<div class="st '+s[2]+'"><div class="l">'+s[0]+'</div><div><b>'+s[1]+'</b> '+(s[2]=="now"?'<span class="chip">In progress</span>':s[2]=="next"?'<span class="chip">Next</span>':"")+'<p>'+s[3]+'</p></div></div>'}).join("")}
+function route(){var v=(location.hash||"#home").slice(1);if(!$("v-"+v))v="home";
+ document.querySelectorAll(".view").forEach(function(e){e.classList.toggle("on",e.id=="v-"+v)});
+ document.querySelectorAll("nav a").forEach(function(a){var m=a.dataset.v==v;a.classList.toggle("on",m);if(m){a.setAttribute("aria-current","page")}else{a.removeAttribute("aria-current")}});window.scrollTo(0,0)}
+function setRole(r){role=r;$("rF").classList.toggle("on",r=="farmer");$("rO").classList.toggle("on",r=="officer");list()}
+function pick(e){var r=e.target.closest(".row");if(r&&r.dataset.i){sel=+r.dataset.i;home()}}
+$("pl").addEventListener("click",pick);
+$("pl").addEventListener("keydown",function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();pick(e)}});
+$("rF").onclick=function(){setRole("farmer")};$("rO").onclick=function(){setRole("officer")};
+$("fs").onclick=function(){var a=+$("fa").value,y=+$("fy").value||0,d=$("fd").value,h=$("fh").value,e="";
+ if(!(a>0))e="Area must be more than 0.";else if(y<0)e="Harvest volume cannot be negative.";else if(!d||!h)e="Enter both the planting date and the expected harvest date.";else if(h<=d)e="The harvest date must come after the planting date.";
+ $("fe").textContent=e;if(e)return;recs.unshift({id:nid(),n:$("fc").value,a:a,d:d,h:h,y:y,v:false});save();sync();list();$("fy").value="";toast("Planting saved on this device")};
+$("rl").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){recs[+b.dataset.v].v=true;save();sync();list()}});
+$("xs").onclick=function(){var p=+$("xp").value,d=$("xd").value,m=$("xm").value.trim(),t=$("xt").value,e="";
+ if(!(p>0))e="Price must be more than 0.";else if(!d||d>new Date().toISOString().slice(0,10))e="Enter the date you saw this price (not a future date).";else if(!m)e="Add where the price came from.";else if(t=="ver"&&role!="officer")e="Only field officers can mark a price Verified. Real enforcement arrives with accounts (Stage B).";
+ $("xe").textContent=e;if(e)return;PX.push({id:nid(),c:$("xc").value,p:p,u:$("xu").value,d:d,m:m,t:t});try{localStorage.setItem("fe_px",JSON.stringify(PX))}catch(x){}sync();pxl();$("xp").value="";toast("Price saved on this device")};
+$("sb").onclick=function(){var n=$("sn").value.trim(),s=$("ss").value.trim();if(!n||!s){$("se").textContent="Crop name and an evidence source are both required.";return}
+ $("se").textContent="";SUG.push({id:nid(),n:n,v:$("sv").value.trim(),s:s,m:$("cm").value});try{localStorage.setItem("fe_sug",JSON.stringify(SUG))}catch(x){}sync();crops();$("sn").value=$("sv").value=$("ss").value=""};
+$("pc").onchange=calc;["pa","pv","pp","ps","pf","pd","pb","pi","pt","po2"].forEach(function(i){$(i).addEventListener("input",calc)});
+$("rc").onchange=risk;$("rd").addEventListener("input",risk);
+$("cp").onchange=function(){munis();locChange()};
+$("cm").onchange=function(){$("wm").value=this.value;locChange()};
+$("wm").onchange=function(){$("cm").value=this.value;locChange()};
+$("th").onclick=function(){var d=document.documentElement,dark=d.dataset.theme?d.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;d.dataset.theme=dark?"light":"dark";try{localStorage.setItem("fe_theme",d.dataset.theme)}catch(e){}};
+$("dt").textContent=new Date().toLocaleDateString("en-PH",{day:"numeric",month:"short",year:"numeric"});
+$("fd").value=new Date().toISOString().slice(0,10);
+var OPN={},TS=document.createElement("div"),tt;TS.className="ts";TS.setAttribute("role","status");document.body.appendChild(TS);
+function toast(m){TS.textContent=m;TS.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){TS.classList.remove("on")},2200)}
+$("ro").addEventListener("toggle",function(e){if(e.target.dataset.n)OPN[e.target.dataset.n]=e.target.open},true);
+function rsum(o){var hi=o.filter(function(x){return x.l>=2}).length,nd=o.filter(function(x){return x.l===null}).length;return '<div class="sum"><b>'+(hi?hi+(hi>1?" risks need":" risk needs")+" attention":"No high risks flagged")+'</b><span>'+nd+' of '+o.length+' checks lack data. Missing data is not the same as low risk. Estimates, not predictions.</span></div>'}
+function area(a,w,h){var mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=(mx-mn)||1,p=a.map(function(v,i){return [i*w/(a.length-1),h-6-(v-mn)/r*(h-14)]}),l=p.map(function(q){return q[0].toFixed(1)+","+q[1].toFixed(1)}).join(" "),e=p[p.length-1];return '<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".35"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><polygon points="0,'+h+' '+l+' '+w+','+h+'" fill="url(#ag)"/><polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="'+l+'"/><circle cx="'+e[0]+'" cy="'+e[1]+'" r="4" fill="currentColor"/>'}
+function brk(t){if(!t)return"";var L=[["ps","Seeds","#0f7a52"],["pf","Fertilizer","#c98a10"],["pd","Pesticide","#b42318"],["pb","Labor","#3b6fb0"],["pi","Irrigation","#2a9d8f"],["pt","Transport","#8a5fb5"],["po2","Other","#7a7a6a"]].filter(function(x){return +$(x[0]).value>0});return '<h3 style="font-size:16px;margin:16px 0 8px">Where the money goes</h3><div class="stk">'+L.map(function(x){return '<i style="flex:'+$(x[0]).value+';background:'+x[2]+'" title="'+x[1]+'"></i>'}).join("")+'</div><div class="lg">'+L.map(function(x){return '<span><s style="background:'+x[2]+'"></s>'+x[1]+' '+Math.round(+$(x[0]).value/t*100)+'%</span>'}).join("")+'</div>'}
+function fv(){var d=$("fd").value,h=$("fh").value,a=$("fa").value;$("fe").textContent=a!==""&&!(+a>0)?"Area must be more than 0.":(d&&h&&h<=d)?"The harvest date must come after the planting date.":""}
+["fa","fd","fh"].forEach(function(i){$(i).addEventListener("input",fv)});
+$("xp").addEventListener("input",function(){$("xe").textContent=this.value!==""&&!(+this.value>0)?"Price must be more than 0.":""});
+(function(){var h=$("hero"),x0=0,dx=0,t0=0,on=0;h.addEventListener("pointerdown",function(e){on=1;x0=e.clientX;dx=0;t0=e.timeStamp;h.setPointerCapture(e.pointerId);h.style.transition="none"});
+h.addEventListener("pointermove",function(e){if(on){dx=e.clientX-x0;h.style.transform="translateX("+dx*.6+"px)"}});
+function end(e){if(!on)return;on=0;var v=dx/Math.max(1,e.timeStamp-t0);h.style.transition="transform .5s var(--out)";h.style.transform="";if(Math.abs(dx)>60||Math.abs(v)>.5){sel=(sel+(dx<0?1:-1)+CROPS.length)%CROPS.length;home()}}
+h.addEventListener("pointerup",end);h.addEventListener("pointercancel",end)})();
+/* ===== Shared sync + Admin (needs the page's shared database; falls back to this device only) ===== */
+var DBH=null,UID=null,ADMIN=false,DL=null,RV={ok:{},no:{}},FD=[],REVALL={};
+function nid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function setSync(s){var e=$("syn");if(e)e.textContent=s=="on"?"Shared sync: on. Your entries are visible to the FarmEdge admin team.":s=="blocked"?"Shared sync: blocked for your access level. Entries stay on this device.":"Shared sync: off. Entries stay on this device."}
+function sync(){if(!DBH||!UID)return;[recs,PX,SUG].forEach(function(a){a.forEach(function(x){if(!x.id)x.id=nid()})});save();
+ try{localStorage.setItem("fe_px",JSON.stringify(PX));localStorage.setItem("fe_sug",JSON.stringify(SUG))}catch(e){}
+ DBH.doc("farmers/"+UID).set({recs:recs,px:PX,sug:SUG,town:$("cm").value,ts:Date.now()}).then(function(){setSync("on")}).catch(function(){setSync("blocked")})}
+function aInit(){setSync("off");if(!window.claude||!claude.use)return;
+ Promise.all([claude.use("db"),claude.use("user"),claude.use("downloads")]).then(function(a){DBH=a[0];DL=a[2];var U=a[1];if(!DBH||!U)return;
+  return Promise.all([U.id(),U.isOwner(),U.canEdit()]).then(function(b){UID=b[0];ADMIN=!!(b[1]||b[2]);if(!UID)return;
+   DBH.doc("review/"+UID).onSnapshot(function(s){RV=s.exists?s.data():{};RV.ok=RV.ok||{};RV.no=RV.no||{};list()},function(){});
+   sync();
+   if(ADMIN){$("nadm").style.display="";DBH.collection("farmers").onSnapshot(function(s){FD=s.docs.map(function(d){var x=d.data()||{};x.uid=d.id;return x});adm()},function(){FD=[];adm("Could not read shared data. Check your access level.")});
+    DBH.collection("review").onSnapshot(function(s){REVALL={};s.docs.forEach(function(d){REVALL[d.id]=d.data()||{}});adm()},function(){})}})}).catch(function(){})}
+function setRev(u,k,id,v){var r=REVALL[u]||{};r={ok:r.ok||{},no:r.no||{},bad:r.bad||{},sg:r.sg||{}};
+ if(k=="ok"){r.ok[id]=true;delete r.no[id]}else if(k=="no"){r.no[id]=true;delete r.ok[id]}else if(k=="bad"){if(r.bad[id])delete r.bad[id];else r.bad[id]=true}else if(k=="sg")r.sg[id]=v;
+ DBH.doc("review/"+u).set(r).catch(function(){toast("Could not save. Check your admin access.")})}
+function csv(rows,cols){return [cols.join(",")].concat(rows.map(function(r){return cols.map(function(c){var v=r[c]==null?"":String(r[c]);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(",")})).join("\n")}
+function adm(err){$("a_gate").hidden=ADMIN;$("a_main").hidden=!ADMIN;if(!ADMIN)return;
+ var R=[],P=[],G=[],rv=function(u){var r=REVALL[u]||{};return {ok:r.ok||{},no:r.no||{},bad:r.bad||{},sg:r.sg||{}}},who=function(u){return "Contributor "+String(u).slice(0,6)},kg=function(x){return x.u=="₱/ton"?x.p/1000:x.p};
+ FD.forEach(function(f){(f.recs||[]).forEach(function(r){R.push(Object.assign({uid:f.uid},r))});(f.px||[]).forEach(function(r){P.push(Object.assign({uid:f.uid},r))});(f.sug||[]).forEach(function(r){G.push(Object.assign({uid:f.uid},r))})});
+ R.forEach(function(r){var v=rv(r.uid);r.st=(r.v||v.ok[r.id])?"ok":v.no[r.id]?"no":"pend"});P.forEach(function(p){p.bad=!!rv(p.uid).bad[p.id]});
+ var pend=R.filter(function(r){return r.st=="pend"}),good=P.filter(function(p){return !p.bad}),last=FD.reduce(function(m,f){return Math.max(m,f.ts||0)},0);
+ $("a_kp").innerHTML=[[FD.filter(function(f){return (f.recs||[]).length+(f.px||[]).length+(f.sug||[]).length}).length,"Contributors"],[R.length,"Plantings logged"],[P.length,"Price entries"],[pend.length,"Waiting for verification"],[last?new Date(last).toLocaleDateString("en-PH",{day:"numeric",month:"short"}):"-","Last activity"],[G.length,"Crop suggestions"]].map(function(k){return '<div><div class="muted">'+k[1]+'</div><div class="kpi">'+k[0]+'</div></div>'}).join("")+(err?'<p class="note dn" style="grid-column:1/-1">'+esc(err)+'</p>':"");
+ var med={};good.forEach(function(p){(med[p.c]=med[p.c]||[]).push(kg(p))});Object.keys(med).forEach(function(c){var a=med[c].sort(function(x,y){return x-y});med[c]=a.length>=3?a[Math.floor(a.length/2)]:null});
+ var seen={},dup=[];R.forEach(function(r){var k=[r.uid,r.n,r.d,r.a].join("|");if(seen[k])dup.push(r);seen[k]=1});
+ var ri=function(r){return esc(r.n)+" · "+r.a+" ha · "+who(r.uid)},pi=function(p){return esc(p.c)+" ₱"+p.p+" "+esc(p.u)+" on "+esc(p.d)+" · "+who(p.uid)};
+ var Q=[["Plantings waiting for verification",pend.map(ri),"Use the queue below to verify or reject."],
+  ["Outdated price entries",good.filter(function(p){return age(p.d)>30}).map(pi),"Prices older than 30 days should not drive decisions."],
+  ["Price outliers",good.filter(function(p){var m=med[p.c];return m&&(kg(p)>2*m||kg(p)<m/2)}).map(pi),"More than 2x or less than half the crop median (needs 3 or more prices). Check unit and typing, then flag."],
+  ["Possible duplicate plantings",dup.map(ri),"Same contributor, crop, planting date and area entered twice."],
+  ["Plantings without a harvest estimate",R.filter(function(r){return !r.y}).map(ri),"Risk checks cannot use these for supply."],
+  ["Unusually large areas",R.filter(function(r){return r.a>20}).map(ri),"More than 20 ha for one planting. Confirm with the contributor."]];
+ $("a_q").innerHTML=Q.map(function(q){return '<details class="rk"><summary><span class="lvl '+(q[1].length?"l2":"l0")+'">'+(q[1].length?q[1].length+" found":"None")+'</span><b>'+q[0]+'</b><i class="chev"></i></summary><p>'+q[2]+'</p>'+(q[1].length?'<p class="muted">'+q[1].slice(0,8).join("<br>")+(q[1].length>8?"<br>and "+(q[1].length-8)+" more":"")+'</p>':"")+'</details>'}).join("");
+ $("a_vq").innerHTML=pend.length?pend.slice(0,30).map(function(r){return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(r.n)+' · '+r.a+' ha</b><span>Planted '+esc(r.d)+(r.h?" · harvest "+esc(r.h):"")+(r.y?" · est. "+Number(r.y).toLocaleString("en-PH")+" kg":"")+" · "+who(r.uid)+'</span></div><button class="btn s" data-a="ok" data-u="'+esc(r.uid)+'" data-i="'+esc(r.id)+'">Verify</button><button class="btn s" data-a="no" data-u="'+esc(r.uid)+'" data-i="'+esc(r.id)+'">Reject</button></div>'}).join(""):'<p class="muted">Nothing is waiting.</p>';
+ $("a_sg").innerHTML=G.length?G.slice(0,30).map(function(g){var s=rv(g.uid).sg[g.id];return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(g.n)+(g.v?" · "+esc(g.v):"")+'</b><span>'+esc(g.s)+" · "+esc(g.m)+" · "+who(g.uid)+'</span></div>'+(s?'<span class="tag '+(s=="ok"?"ver":"old")+'">'+(s=="ok"?"Approved":"Dismissed")+'</span>':'<button class="btn s" data-a="sg" data-v="ok" data-u="'+esc(g.uid)+'" data-i="'+esc(g.id)+'">Approve</button><button class="btn s" data-a="sg" data-v="no" data-u="'+esc(g.uid)+'" data-i="'+esc(g.id)+'">Dismiss</button>')+'</div>'}).join(""):'<p class="muted">No suggestions yet.</p>';
+ $("a_px").innerHTML=P.length?P.slice().sort(function(a,b){return a.d<b.d?1:-1}).slice(0,15).map(function(p){return '<div class="row" style="cursor:default"><div class="n"><b'+(p.bad?' style="text-decoration:line-through"':"")+'>'+esc(p.c)+' · ₱'+p.p+' '+esc(p.u)+'</b><span>'+esc(p.d)+" · "+esc(p.m)+" · "+who(p.uid)+'</span></div><button class="btn s" data-a="bad" data-u="'+esc(p.uid)+'" data-i="'+esc(p.id)+'">'+(p.bad?"Unflag":"Flag as wrong")+'</button></div>'}).join(""):'<p class="muted">No price entries yet.</p>';
+ var cs={};R.forEach(function(r){var c=cs[r.n]=cs[r.n]||{n:r.n,k:0,a:0,y:0,p:0,l:null};c.k++;c.a+=+r.a||0;c.y+=+r.y||0});good.forEach(function(p){var c=cs[p.c]=cs[p.c]||{n:p.c,k:0,a:0,y:0,p:0,l:null};c.p++;if(!c.l||p.d>c.l.d)c.l=p});
+ $("a_ct").innerHTML='<table><tr><th>Crop</th><th>Plantings</th><th>Hectares</th><th>Expected kg</th><th>Price entries</th><th>Latest price</th></tr>'+Object.keys(cs).map(function(k){var c=cs[k];return '<tr><td>'+esc(c.n)+'</td><td>'+c.k+'</td><td>'+c.a.toFixed(1)+'</td><td>'+c.y.toLocaleString("en-PH")+'</td><td>'+c.p+'</td><td>'+(c.l?"₱"+c.l.p+" "+esc(c.l.u)+" ("+esc(c.l.d)+")":"-")+'</td></tr>'}).join("")+'</table>';
+ adm.R=R;adm.P=P}
+$("a_main").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||!b.dataset.a)return;var d=b.dataset;
+ if(d.a=="exp"){var rows=d.k=="r"?adm.R:adm.P,cols=d.k=="r"?["uid","id","n","a","d","h","y","st"]:["uid","id","c","p","u","d","m","t","bad"];
+  if(!DL||!rows.length){toast(rows.length?"Download is not available here":"Nothing to export");return}
+  DL.save({filename:"farmedge_"+(d.k=="r"?"plantings":"prices")+".csv",data:csv(rows,cols)}).catch(function(){});return}
+ setRev(d.u,d.a,d.i,d.v)});
+/* ===== Simulator (merged into FarmEdge V2) ===== */
+var SM=[["Maramag market",.95,.5],["Valencia market",1,1],["Malaybalay market",1,1.5],["Cagayan de Oro (Agora)",1.12,3],["Davao (Bankerohan)",1.18,4.5]];
+var SN1=["Juan","Maria","Jose","Ana","Pedro","Rosa","Ramon","Liza"],SN2=["Dela Cruz","Santos","Reyes","Bautista","Ocampo","Garcia","Mendoza","Aquino"];
+var SK=[["n","Simulated farmers",10,300,1,100,""],["y","Yield change (weather)",-60,40,1,0,"%"],["c","Input cost change",-20,60,1,0,"%"],["d","Market demand level",50,150,1,100,"%"],["e","Price sensitivity to oversupply",.2,1.2,.1,.6,""],["m","Sold through middlemen",0,100,1,60,"%"],["k","Farmers crowding into one crop",0,100,1,0,"%"]];
+var SP={"Baseline":{y:0,c:0,d:100,m:60,k:0},"Typhoon":{y:-35,c:10,d:100,m:60,k:0},"Crop rush":{y:0,c:0,d:100,m:60,k:60},"Fuel spike":{y:0,c:30,d:95,m:60,k:0},"Direct selling":{y:0,c:0,d:100,m:10,k:0}};
+var SR=null,SFARM=[];
+var spe=function(v){return (v<0?"−":"")+php(Math.abs(Math.round(v)))},sfm=function(v){return Math.round(v).toLocaleString("en-PH")},ssum=function(a){return a.reduce(function(x,y){return x+y},0)};
+function skey(n){n=String(n).toLowerCase();return /tomato/.test(n)?"Tomato":/cabbage|highland/.test(n)?"Cabbage":/corn/.test(n)?"Yellow corn":/ginger/.test(n)?"Ginger":/banana/.test(n)?"Banana (Cavendish)":null}
+function srng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sgen(){var r=srng(+$("q_seed").value||1),n=+$("q_n").value;SFARM=[];for(var i=0;i<n;i++){var u=[];for(var j=0;j<11;j++)u.push(r());SFARM.push(u)}}
+// Crop inputs come from the Home price board and supply/demand sample; a price you logged in Records replaces the sample price.
+function sCrops(){return CROPS.map(function(c){var d=DEM.filter(function(x){return x.n==c.n})[0],p=c.h[c.h.length-1],lg=null;
+  var P=PX.filter(function(x){return skey(x.c)==c.n}).sort(function(a,b){return a.d<b.d?1:-1});
+  if(P.length){p=P[0].u=="₱/ton"?P[0].p/1000:P[0].p;lg=P[0].d}
+  return {n:c.n,p:p,lg:lg,c:c.cost,y:c.y,pw:d?d.p:72,dw:d?d.d:66}})}
+function scalc(){var p={};SK.forEach(function(k){p[k[0]]=+$("q_"+k[0]).value});
+ var CR=sCrops(),K=CR.length,wt=CR.map(function(c){return c.pw/c.y}),ws=ssum(wt),crowd=+$("q_crop").value,tw=Object.keys(PROV.Bukidnon);
+ var sim=SFARM.map(function(u){var ci=K-1,a=0;if(u[0]<p.k/100)ci=crowd;else for(var j=0;j<K;j++){a+=wt[j]/ws;if(u[1]<a){ci=j;break}}
+  var ha=Math.round((.5+u[2]*u[2]*4.5)*10)/10;return {u:u,nm:SN1[Math.floor(u[10]*8)]+" "+SN2[Math.floor(u[9]*8)],tw:tw[Math.floor(u[9]*tw.length)],ci:ci,ha:ha,base:ha*CR[ci].y*(.8+.4*u[3]),mi:Math.floor(u[6]*SM.length),real:0}});
+ var real=[];recs.forEach(function(r,i){var k=skey(r.n),ci=-1;CR.forEach(function(c,j){if(c.n==k)ci=j});if(ci<0)return;
+  real.push({nm:"★ Your record",tw:$("cm").value,ci:ci,ha:r.a,base:r.y||r.a*CR[ci].y,mi:1,real:1,ri:i})});
+ var rows=real.concat(sim),sup=CR.map(function(){return 0}),bs=sup.slice();
+ rows.forEach(function(x){x.out=x.base*(1+p.y/100);sup[x.ci]+=x.out;bs[x.ci]+=x.base});
+ var bt=ssum(bs),dws=ssum(CR.map(function(c){return c.dw})),dem=CR.map(function(c){return c.dw/dws*bt*p.d/100});
+ var pf=CR.map(function(c,i){return sup[i]>0?Math.min(1.8,Math.max(.35,Math.pow(dem[i]/sup[i],p.e))):1});
+ rows.forEach(function(x){var c=CR[x.ci],m=SM[x.mi],u=x.u||[],cut=x.real?p.m/100*.265+(1-p.m/100)*.035:(u[7]<p.m/100?.18+.17*u[8]:.02+.03*u[8]);
+  x.cut=cut;x.price=c.p*m[1]*(x.real?1:.9+.2*u[5])*pf[x.ci];x.rev=x.out*x.price*(1-cut);
+  x.cost=x.ha*c.c*(x.real?1:.9+.2*u[4])*(1+p.c/100)+x.out*m[2];x.profit=x.rev-x.cost;x.mid=x.out*x.price*cut});
+ return {p:p,CR:CR,rows:rows,sup:sup,dem:dem,pf:pf}}
+function sRun(){SR=scalc();var R=SR,rows=R.rows,n=rows.length,loss=rows.filter(function(x){return x.profit<0}).length,sm=function(k){return ssum(rows.map(function(x){return x[k]}))};
+ SK.forEach(function(k){var v=+$("q_"+k[0]).value;$("qv_"+k[0]).textContent=(v>0&&k[0]=="y"||v>0&&k[0]=="c"?"+":"")+v+k[6]});
+ $("q_w").textContent=W?"Forecast for "+$("cm").value+": about "+Math.round(ssum(W.daily.precipitation_sum))+" mm of rain over 7 days. Compare it with the yield slider.":"Open the Weather tab to load the forecast, then compare it with the yield slider.";
+ $("q_kp").innerHTML=[[n,"Farmers in the simulation"],[sm("ha").toFixed(1)+" ha","Land planted"],[sfm(sm("out")/1000)+" t","Expected harvest"],[spe(sm("profit")/n),"Average profit per farmer"],[Math.round(loss/n*100)+"%","Farmers at a loss"],[spe(sm("mid")),"Taken by middlemen"]].map(function(k){return '<div><div class="muted">'+k[1]+'</div><div class="kpi">'+k[0]+'</div></div>'}).join("");
+ var mx=Math.max.apply(0,R.sup.concat(R.dem))||1;
+ $("q_sd").innerHTML=R.CR.map(function(c,i){var g=R.sup[i]>R.dem[i];return '<div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>'+c.n+'</b><span class="muted">Supply '+sfm(R.sup[i]/1000)+' t · Demand '+sfm(R.dem[i]/1000)+' t <b class="'+(g?"dn":"up")+'">'+(g?"Oversupply risk":"Room to sell")+'</b></span></div><div class="bar" role="img" aria-label="Supply '+sfm(R.sup[i]/1000)+' tons, demand '+sfm(R.dem[i]/1000)+' tons"><i style="width:'+R.sup[i]/mx*100+'%"></i><u style="left:'+Math.min(99,R.dem[i]/mx*100)+'%"></u></div></div>'}).join("");
+ $("q_my").innerHTML=recs.length?recs.map(function(r,i){var x=rows.filter(function(y){return y.real&&y.ri===i})[0];
+  return '<div class="row" style="cursor:default"><div class="n"><b>'+esc(r.n)+' · '+r.a+' ha</b><span>'+(x?"Price "+php(Math.round(x.price*100)/100)+"/kg · assumes "+Math.round(x.cut*100)+"% goes to middlemen":"Not simulated: no sample data for this crop yet")+'</span></div>'+(x?'<div class="px '+(x.profit<0?"dn":"up")+'">'+spe(x.profit)+'<small>est. profit</small></div>':"")+'</div>'}).join(""):'<p class="muted">No plantings yet. Log one in Records and it joins the simulation as a real entry.</p>';
+ $("q_ct").innerHTML='<table><tr><th>Crop</th><th>Farmers</th><th>Price vs. reference</th><th>Profit per ha</th><th>Reference price</th></tr>'+R.CR.map(function(c,i){var rs=rows.filter(function(x){return x.ci==i}),ha=ssum(rs.map(function(x){return x.ha})),pr=ssum(rs.map(function(x){return x.profit}));
+  return '<tr><td>'+c.n+'</td><td>'+rs.length+'</td><td>'+Math.round(R.pf[i]*100)+'%</td><td class="'+(pr<0?"dn":"")+'">'+(ha?spe(pr/ha):"-")+'</td><td>'+php(c.p)+'/kg '+(c.lg?'<span class="tag user">your price, '+c.lg+'</span>':'<span class="tag est">sample</span>')+'</td></tr>'}).join("")+'</table>';
+ $("q_ft").innerHTML='<table><tr><th>Farmer</th><th>Town</th><th>Crop</th><th>Ha</th><th>Market</th><th>Harvest (kg)</th><th>Profit</th></tr>'+rows.slice(0,150).map(function(x){return '<tr><td>'+esc(x.nm)+'</td><td>'+esc(x.tw)+'</td><td>'+R.CR[x.ci].n+'</td><td>'+x.ha+'</td><td>'+SM[x.mi][0]+'</td><td>'+sfm(x.out)+'</td><td class="'+(x.profit<0?"dn":"")+'">'+spe(x.profit)+'</td></tr>'}).join("")+'</table>'}
+function sInit(){
+ $("q_ctl").innerHTML=SK.map(function(k){return '<label for="q_'+k[0]+'">'+k[1]+' <b id="qv_'+k[0]+'"></b></label><input type="range" id="q_'+k[0]+'" min="'+k[2]+'" max="'+k[3]+'" step="'+k[4]+'" value="'+k[5]+'">'}).join("");
+ $("q_crop").innerHTML=CROPS.map(function(c,i){return '<option value="'+i+'">'+c.n+'</option>'}).join("");
+ $("q_pr").innerHTML=Object.keys(SP).map(function(k){return '<button class="btn s" data-p="'+k+'">'+k+'</button>'}).join("");
+ sgen();sRun();
+ SK.forEach(function(k){$("q_"+k[0]).addEventListener("input",function(){if(k[0]=="n")sgen();sRun()})});
+ $("q_crop").onchange=sRun;$("q_seed").onchange=function(){sgen();sRun()};
+ $("q_new").onclick=function(){$("q_seed").value=Math.floor(Math.random()*99999)+1;sgen();sRun()};
+ $("q_pr").onclick=function(e){var k=e.target.dataset.p;if(!k)return;var v=SP[k];Object.keys(v).forEach(function(a){$("q_"+a).value=v[a]});if(k=="Crop rush")$("q_crop").value=0;sRun()}}
+// Feeds the Risk tab through V2's own RISK_MODELS hook
+RISK_MODELS.push(function(x){var k=skey(x.crop);if(!k||!SR)return null;var i=-1;SR.CR.forEach(function(c,j){if(c.n==k)i=j});if(i<0||!SR.dem[i])return null;
+ var q=SR.sup[i]/SR.dem[i];return mk("Simulated oversupply (scenario)",band(q,[.7,1,1.3]),"In the current Simulate scenario, supply is "+Math.round(q*100)+"% of demand for "+k+". This is a what-if test, not a forecast.","Simulate tab · "+SR.rows.length+" farmers including "+SR.rows.filter(function(r){return r.real}).length+" of your records · sample prices unless you logged your own")});
+window.addEventListener("hashchange",function(){if(location.hash=="#sim")sRun()});
+fill();sInit();home();list();pxl();calc();road();crops();route();loadW();aInit();
+window.addEventListener("hashchange",route);
+})();
+</script>
+</body>
+</html>
